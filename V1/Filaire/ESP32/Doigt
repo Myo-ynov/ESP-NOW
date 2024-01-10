@@ -1,0 +1,32 @@
+#include <Servo.h>
+
+Servo monServo;
+int angle = 90; // Angle initial du servo (90 degrés)
+int flexSensorPin = A0;
+int flexSensorValue;
+int minAngle = 0; // Angle minimal du servo (0 degrés)
+int maxAngle = 180; // Angle maximal du servo (180 degrés)
+
+void setup() {
+  monServo.attach(5); // Reliez le servo à la broche 9 de l'Arduino
+  Serial.begin(9600);
+}
+
+void loop() {
+  flexSensorValue = analogRead(flexSensorPin);
+
+  // Remappez la valeur du capteur de flexion sur l'intervalle des angles du servo
+  angle = map(flexSensorValue, 0, 4095, minAngle, maxAngle);
+
+  // Limitez l'angle dans la plage autorisée
+  angle = constrain(angle, minAngle, maxAngle);
+
+  monServo.write(angle); // Déplacez le servo à l'angle calculé
+
+  Serial.print("Flex Sensor Value: ");
+  Serial.print(flexSensorValue);
+  Serial.print("   Servo Angle: ");
+  Serial.println(angle);
+
+  delay(20); // Délai pour stabiliser la lecture
+}
